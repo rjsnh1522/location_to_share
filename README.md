@@ -1,5 +1,6 @@
 # README
 
+## Basic app to demonstrate the use of OpenLayer 3 in rails
 ### Basic Requirment 
 * MongoDb as database
 * Rails  5.1.6
