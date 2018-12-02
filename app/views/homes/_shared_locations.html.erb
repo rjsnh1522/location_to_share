@@ -1,0 +1,12 @@
+
+<%unless @shared_locations.present? %>
+<p>No locations Shared</p>
+<% else %>
+<p>Locations you have shared</p>
+<% @shared_locations.each_with_index do |shl, ind| %>
+  <ul>
+    <li> <span><%= ind+1%></span><%= shl.try(:location)[0] %>, <%= shl.try(:location)[1] %></li>
+  </ul>
+<% end %>
+
+<% end %>

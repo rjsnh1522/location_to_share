@@ -1,0 +1,18 @@
+ <table class="table">
+    <thead>
+      <tr>
+        <th>My Friends</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if @my_friends.present?  %>
+        <% @my_friends.each do |friend| %>
+        <tr>
+          <td><%= friend.try(:username) %></td>
+        </tr>
+      <% end %>
+      <% else %>
+        <p>Please add some friend to share your location <a href="/users/find_friends">Find Friends</a></p>
+      <% end %>
+    </tbody>
+  </table>

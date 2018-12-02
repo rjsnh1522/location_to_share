@@ -1,0 +1,9 @@
+<p><%= @msg if @msg.present? && @msg != ''%></p>
+
+<% if @public_locations.present? %>
+  <% @public_locations.each_with_index do |loc, ind| %>
+  <ul>
+    <li><%= loc.try(:location)[0] %>, <%= loc.try(:location)[1] %></li>
+  </ul>
+  <% end %>
+<% end %>

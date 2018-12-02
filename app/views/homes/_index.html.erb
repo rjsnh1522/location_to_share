@@ -1,0 +1,128 @@
+
+<div class="row">
+    <div class="col-md-2">
+      <%= render partial: 'my_friend_list'%>
+    </div>
+    <div class="col-md-7">
+      <div id="map" class="map"></div>
+      <button type="button" class="btn btn-info btn-lg" id="share_opener">Share</button>
+    
+      <div id="share_with_friends" class="modal fade" role="dialog">
+        <%= render partial: 'homes/share_with_friends'%>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <%= render partial: 'homes/shared_locations'%>
+    </div>
+</div>
+     
+<script>
+var vectorSource = new ol.source.Vector(),
+    vectorLayer = new ol.layer.Vector({
+      source: vectorSource
+    }),
+    olview = new ol.View({
+        center: [0, 0],
+        zoom: 2,
+        minZoom: 2,
+        maxZoom: 20
+    }),
+    map = new ol.Map({
+        target: document.getElementById('map'),
+        view: olview,
+        layers: [
+            new ol.layer.Tile({
+                style: 'Aerial',
+                source: new ol.source.OSM()
+            }),
+            vectorLayer
+        ]
+    })
+;
+
+var iconStyle = new ol.style.Style({
+    image: new ol.style.Icon({
+        anchor: [0.5, 46],
+        anchorXUnits: 'fraction',
+        anchorYUnits: 'pixels',
+        opacity: 0.75,
+        src: '/assets/marker.png'
+    }),
+    text: new ol.style.Text({
+        font: '12px Calibri,sans-serif',
+        fill: new ol.style.Fill({ color: '#000' }),
+        stroke: new ol.style.Stroke({
+            color: '#fff', width: 2
+        }),
+        text: 'Some text'
+    })
+});
+map.on('click', function(evt){
+    var feature = new ol.Feature(
+        new ol.geom.Point(evt.coordinate)
+    );
+    var hidden_input = "<input class='hidden_input' type='hidden' name='location[]' value='"+evt.coordinate+"'>"
+    $(".hidden_field_wrapper").append(hidden_input)
+    feature.setStyle(iconStyle);
+    vectorSource.addFeature(feature);
+});
+
+ 
+</script>
+
+<script type="text/javascript">
+  $(document).ready(function(){
+    $("#share_opener").on('click', function(){
+      var locations = []
+      var hidden_input = $('.hidden_input').length
+      if(hidden_input <= 0){
+        alert('Please selet a location to share')
+      }else{
+        $("#share_with_friends").modal("show")
+      }
+
+    });
+
+    function location_array(){
+      var locations = []
+      $('.hidden_input').each(function(){
+        locations.push($(this).val())
+      })
+      return locations;
+    }
+
+    function friend_ids(){
+      var friend_ids = [];
+      $(".friend_ids").each(function(){
+        if($(this).is(':checked')){
+          friend_ids.push($(this).val())
+        }
+      })
+      return friend_ids;
+    }
+
+    function get_share_with_friends(){
+      var locations = location_array();
+      var friend_id = friend_ids();
+      var public = false;
+      if($('.public_share').is(':checked')){
+        public = true;
+      }
+      if(friend_id.length >0 && locations.length > 0){
+        $.ajax({
+          url:'/homes/share_with_friends',
+          method: 'GET',
+          data:{locations: locations, friend_id: friend_id, public: public}
+        })
+      }else{
+        alert("Please select a location and freinds")
+      }
+    }
+
+    $("#share_button").on('click', function(){
+        get_share_with_friends()
+    })
+
+
+  })
+</script>

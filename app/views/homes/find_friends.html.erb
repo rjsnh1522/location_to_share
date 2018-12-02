@@ -1,0 +1,24 @@
+
+  <h2>Add Remove Friends</h2>         
+  <table class="table">
+    <thead>
+      <tr>
+        <th>UserName</th>
+        <th>Friend</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @find_friends.each do |friend| %>
+      <tr>
+        <td><%= friend.try(:username)%> </td>
+        <td>
+          <% if is_my_friend?(friend.id) %>
+            <a href="/homes/remove_my_friend?friend_id=<%= friend.id %>">Remove Friend</a>
+          <% else%>
+            <a href="/homes/add_my_friend?friend_id=<%= friend.id %>">Add Friend</a>
+          <% end %>
+        </td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
